@@ -1,0 +1,337 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>jsPlumb Demo 3</title>
+<link rel="stylesheet" type="text/css" href="jquery-ui-1.10.4.css" />
+<script type="text/javascript" src="jquery-1.11.3.js"></script>
+<script type="text/javascript" src="jquery-ui-1.10.4.js"></script>
+<script type="text/javascript" src="jsPlumb-2.1.7.js"></script>
+<style type="text/css">
+
+body {
+    background-color: #FFF;
+    color: #434343;
+    font-family: "Lato", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    height: 100%;
+    padding: 0;
+}
+
+
+.jtk-demo-canvas {
+    margin-left: 160px;
+    height:550px;
+    max-height:700px;
+    border:1px solid #CCC;
+    background-color:white;
+}
+
+@media (max-width: 600px) {
+    .sidebar {
+        float:none;
+        height: 55px;
+        width: 100%;
+        padding-top:0;
+    }
+
+    .sidebar ul li {
+        display:inline-block;
+        margin-top: 7px;
+        width:67px;
+    }
+    .jtk-demo-canvas {
+        margin-left: 0;
+        margin-top:10px;
+        height:364px;
+    }
+}
+
+.canvas-wide {
+    margin-left:0;
+}
+
+.flowchart-demo .window {
+    border: 1px solid #346789;
+    box-shadow: 2px 2px 19px #aaa;
+    -o-box-shadow: 2px 2px 19px #aaa;
+    -webkit-box-shadow: 2px 2px 19px #aaa;
+    -moz-box-shadow: 2px 2px 19px #aaa;
+    -moz-border-radius: 0.5em;
+    border-radius: 0.5em;
+    opacity: 0.8;
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    cursor: pointer;
+    text-align: center;
+    z-index: 20;
+    position: absolute;
+    background-color: #eeeeef;
+    color: black;
+    font-family: helvetica, sans-serif;
+    padding: 0.5em;
+    font-size: 0.9em;
+    -webkit-transition: -webkit-box-shadow 0.15s ease-in;
+    -moz-transition: -moz-box-shadow 0.15s ease-in;
+    -o-transition: -o-box-shadow 0.15s ease-in;
+    transition: box-shadow 0.15s ease-in;
+}
+
+.flowchart-demo .window:hover {
+    box-shadow: 2px 2px 19px #444;
+    -o-box-shadow: 2px 2px 19px #444;
+    -webkit-box-shadow: 2px 2px 19px #444;
+    -moz-box-shadow: 2px 2px 19px #444;
+    opacity: 0.6;
+}
+
+.flowchart-demo .active {
+    border: 1px dotted green;
+}
+
+.flowchart-demo .hover {
+    border: 1px dotted red;
+}
+
+.flowchart-demo .jsplumb-connector {
+    z-index: 4;
+}
+
+.flowchart-demo .jsplumb-endpoint, .endpointTargetLabel, .endpointSourceLabel {
+    z-index: 21;
+    cursor: pointer;
+}
+
+.flowchart-demo .aLabel {
+    background-color: white;
+    padding: 0.4em;
+    font: 12px sans-serif;
+    color: #444;
+    z-index: 21;
+    border: 1px dotted gray;
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.flowchart-demo .aLabel.jsplumb-hover {
+    background-color: #5C96BC;
+    color: white;
+    border: 1px solid white;
+}
+
+#flowchartWindow1 {
+    top: 34em;
+    left: 5em;
+}
+
+#flowchartWindow2 {
+    top: 7em;
+    left: 36em;
+}
+
+#flowchartWindow3 {
+    top: 27em;
+    left: 48em;
+}
+
+#flowchartWindow4 {
+    top: 23em;
+    left: 22em;
+}
+
+
+.window.jsplumb-connected {
+    border: 2px solid green;
+}
+
+    /* ---------------------------------------------------------------------------------------------------- */
+/* --- page structure --------------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------------------------------- */
+
+
+</style>
+</head>
+<body>
+  <div class="jtk-demo-canvas canvas-wide flowchart-demo jtk-surface jtk-surface-nopan" id="canvas">
+
+
+      <!-- <div class="window jtk-node" id="flowchartWindow1"><strong>1</strong><br/><br/></div>
+      <div class="window jtk-node" id="flowchartWindow2"><strong>2</strong><br/><br/></div>
+      <div class="window jtk-node" id="flowchartWindow3"><strong>3</strong><br/><br/></div>
+      <div class="window jtk-node" id="flowchartWindow4"><strong>4</strong><br/><br/></div> -->
+  </div>
+
+</body>
+
+<script type="text/javascript">
+window.onload = function(){
+
+  var data = [{"BlockId":"state_start1","BlockContent":"开始","BlockX":242,"BlockY":19},{"BlockId":"state_flow2","BlockContent":"流程","BlockX":243,"BlockY":211},{"BlockId":"state_end3","BlockContent":"结束","BlockX":565,"BlockY":488},{"BlockId":"state_flow4","BlockContent":"流程","BlockX":565,"BlockY":211}];
+  var lineData = [{"ConnectionId":"con_44","PageSourceId":"state_start1","PageTargetId":"state_flow2","SourceText":"开始","TargetText":"流程","SourceAnchor":"BottomCenter","TargetAnchor":"TopCenter","ConnectText":" 第一步"},{"ConnectionId":"con_48","PageSourceId":"state_flow2","PageTargetId":"state_flow4","SourceText":"流程","TargetText":"流程","SourceAnchor":"RightMiddle","TargetAnchor":"LeftMiddle","ConnectText":" 第二步"},{"ConnectionId":"con_52","PageSourceId":"state_flow4","PageTargetId":"state_end3","SourceText":"流程","TargetText":"结束","SourceAnchor":"Bottom","TargetAnchor":"TopCenter","ConnectText":" 第三步"}];
+
+  $("#canvas").html("");
+  var canvasHtml = new Array();
+  for(var i=0;i<data.length;i++){
+    canvasHtml.push('<div class="window jtk-node" id="'+data[i].BlockId+'" style="top:'+data[i].BlockY+'px;left:'+data[i].BlockX+'px;"><strong>'+data[i].BlockContent+'</strong><br/><br/></div>');
+  }
+  $("#canvas").html(canvasHtml.join(""));
+
+
+  jsPlumb.ready(function () {
+
+    var connectorPaintStyle = {
+            lineWidth: 1,
+            strokeStyle: "#61B7CF",
+            joinstyle: "round",
+            outlineColor: "white",
+            outlineWidth: 1
+        },
+    // .. and this is the hover style.
+        connectorHoverStyle = {
+            lineWidth: 1,
+            strokeStyle: "#216477",
+            outlineWidth: 1,
+            outlineColor: "white"
+        },
+        endpointHoverStyle = {
+            lineWidth: 1,
+            fillStyle: "#216477",
+            strokeStyle: "#216477",
+            outlineWidth: 1
+        },
+    // the definition of source endpoints (the small blue ones)
+        sourceEndpoint = {
+            endpoint: ["Dot", { radius: 1 }],  //端点的形状
+            paintStyle: {
+              strokeStyle: "#1e8151",
+              fillStyle: "transparent",
+              radius: 1,
+              lineWidth: 1
+            },    //端点的颜色样式
+            isSource: true,
+            isTarget: true, //是否可以放置（连线终点）
+            maxConnections: 1, // 设置连接点最多可以连接几条线
+            connector: ["Bezier", { stub: [40, 60], gap: 10, cornerRadius: 5, alwaysRespectStubs: true }],  //连接线的样式种类有[Bezier],[Flowchart],[StateMachine ],[Straight ]
+            connectorStyle: connectorPaintStyle,
+            hoverPaintStyle: endpointHoverStyle,
+            connectorHoverStyle: connectorHoverStyle,
+            dragOptions: {},
+            connectorOverlays: [["Arrow", { width: 1, length: 1, location: 1 }]]
+        },
+        init = function (connection,LineText) {
+            console.log("in init funtcion");
+            connection.getOverlay("label").setLabel(LineText);
+        };
+
+    var instance = window.jsp = jsPlumb.getInstance({
+        // // default drag options
+        // DragOptions: {zIndex: 2000 },
+        // paintStyle: {
+        //   strokeStyle: "#1e8151",
+        //   fillStyle: "transparent",
+        //   radius: 1,
+        //   lineWidth: 1
+        // },    //端点的颜色样式
+        // connectorStyle:connectorPaintStyle,
+        // // the overlays to decorate each connection with.  note that the label overlay uses a function to generate the label text; in this
+        // // case it returns the 'labelText' member that we set on each connection in the 'init' method below.
+        // ConnectionOverlays: [
+            
+        // ],
+        // Container: "canvas"
+
+        Endpoint: ["Dot", {radius: 2}],
+        Connector:"Bezier",
+        HoverPaintStyle: {stroke: "#1e8151", strokeWidth: 1 },
+        ConnectionOverlays: [],
+        Container: "canvas"
+    });
+
+    var basicType = {
+        connector: "Flowchart",
+        paintStyle: { strokeStyle: "red", lineWidth: 4 },
+        hoverPaintStyle: { strokeStyle: "blue" },
+        overlays: [
+            "Arrow"
+        ]
+    };
+    instance.registerConnectionType("basic", basicType);
+
+    // this is the paint style for the connecting lines..
+    
+
+    var _addEndpoints = function (toId, sourceAnchors, targetAnchors) {
+        for (var j = 0; j < sourceAnchors.length; j++) {
+            var sourceUUID = toId + sourceAnchors[i];
+            instance.addEndpoint(toId, sourceEndpoint, {
+                anchor: sourceAnchors[j]
+            });
+        }
+    };
+
+    // suspend drawing and initialise.
+    instance.batch(function () {
+
+        //对 对象块  添加  锚点 的动作
+        for(var j = 0;j<data.length;j++){
+          _addEndpoints(data[j].BlockId, ["LeftMiddle", "RightMiddle"]);
+        }
+
+        // listen for new connections; initialise them the same way we initialise the connections at startup.
+        // instance.bind("connection", function (connInfo, originalEvent) {
+        //     //init(connInfo.connection);
+        // });
+
+        // make all the window divs draggable
+        instance.draggable(jsPlumb.getSelector(".flowchart-demo .window"), { grid: [20, 20] });
+        // THIS DEMO ONLY USES getSelector FOR CONVENIENCE. Use your library's appropriate selector
+        // method, or document.querySelectorAll:
+        //jsPlumb.draggable(document.querySelectorAll(".window"), { grid: [20, 20] });
+
+        // connect a few up
+        for(var k =0;k<lineData.length;k++){
+          console.log(k);
+          if(lineData[k].ConnectText){
+            console.log("in contentText");
+            instance.bind("connection", function (connInfo, originalEvent) {
+              if(lineData[k] && lineData[k].ConnectText){
+                init(connInfo.connection,lineData[k].ConnectText);
+              }
+            });
+          }
+          instance.connect({ source: lineData[k].PageSourceId, target: lineData[k].PageTargetId,anchors:[lineData[k].SourceAnchor,lineData[k].TargetAnchor]});
+        }
+        //
+
+        //
+        // listen for clicks on connections, and offer to delete connections on click.
+        //
+        instance.bind("click", function (conn, originalEvent) {
+           // if (confirm("Delete connection from " + conn.sourceId + " to " + conn.targetId + "?"))
+             //   instance.detach(conn);
+            conn.toggleType("basic");
+        });
+
+        instance.bind("connectionDrag", function (connection) {
+            console.log("connection " + connection.id + " is being dragged. suspendedElement is ", connection.suspendedElement, " of type ", connection.suspendedElementType);
+        });
+
+        instance.bind("connectionDragStop", function (connection) {
+            console.log("connection " + connection.id + " was dragged");
+        });
+
+        instance.bind("connectionMoved", function (params) {
+            console.log("connection " + params.connection.id + " was moved");
+        });
+    });
+
+    jsPlumb.fire("jsPlumbDemoLoaded", instance);
+
+});
+
+}
+
+</script>
+</html>

@@ -1,0 +1,13 @@
+//联线连接的一瞬间，取联线上下级，用于  输出模型继承
+			        pageInstance.bind("connection", function (connInfo, originalEvent) {
+			            //console.log(connInfo);
+			            //console.log("in 2403 connection function");
+			            //console.log(originalEvent);
+			            //加上这个判断，来决断当前是 用户手动拖拽的联线，还是 系统在初始化绘制的时候触发的事件
+			            if(originalEvent){
+			            	//...自己的  逻辑
+					//获取当前连线的 sourceId
+				        var sourceWebId = connInfo.sourceId;
+				        var targetWebId = connInfo.targetId;
+			            }
+			        });
